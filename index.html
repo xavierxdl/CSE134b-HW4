@@ -86,6 +86,23 @@
                 }
             }
     
+            // Reset custom validation on input change
+            function resetCustomValidity(field) {
+                if (field.setCustomValidity) {
+                    field.setCustomValidity('');
+                }
+            }
+    
+            nameInput.addEventListener('input', function() {
+                resetCustomValidity(nameInput);
+            });
+            emailInput.addEventListener('input', function() {
+                resetCustomValidity(emailInput);
+            });
+            commentsInput.addEventListener('input', function() {
+                resetCustomValidity(commentsInput);
+            });
+    
             nameInput.addEventListener('blur', function() {
                 validateField(nameInput, 'Please enter your name.', nameError);
             });
@@ -102,11 +119,12 @@
                 validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
     
                 if (!form.checkValidity()) {
-                    event.preventDefault(); // Prevent form submission if validation fails
+                    event.preventDefault(); // Prevent submission
                 }
             });
         });
     </script>
+    
     
 </body>
 </html>
