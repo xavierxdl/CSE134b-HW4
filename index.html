@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,22 +14,27 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
+
         form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 300px;
         }
+
         label {
             margin-bottom: 5px;
         }
-        input, textarea {
+
+        input,
+        textarea {
             width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             margin-bottom: 10px;
         }
+
         input[type="submit"] {
             cursor: pointer;
             background-color: #4CAF50;
@@ -38,17 +44,35 @@
             border-radius: 4px;
             margin-top: 5px;
         }
+
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
         .output {
             min-height: 20px;
             font-size: 0.9em;
             color: red;
             margin-bottom: 10px;
         }
+
+        .flash {
+            animation: flashAnimation 0.3s;
+        }
+
+        @keyframes flashAnimation {
+            50% {
+                border-color: red;
+            }
+        }
+
+        .fade-out {
+            transition: opacity 2s ease-out;
+            opacity: 0;
+        }
     </style>
 </head>
+
 <body>
     <form action="https://httpbin.org/post" method="post">
         <label for="name">Name:</label>
@@ -67,7 +91,7 @@
         <input type="submit" value="Submit">
     </form>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var form = document.querySelector('form');
             var nameInput = document.getElementById('name');
             var emailInput = document.getElementById('email');
@@ -75,7 +99,7 @@
             var nameError = document.getElementById('name-error');
             var emailError = document.getElementById('email-error');
             var commentsError = document.getElementById('comments-error');
-    
+
             function validateField(field, message, output) {
                 if (!field.checkValidity()) {
                     field.setCustomValidity(message);
@@ -85,46 +109,75 @@
                     output.textContent = '';
                 }
             }
-    
+
+            // Function to handle illegal characters
+            function handleIllegalInput(field, output, regexPattern) {
+                field.addEventListener('input', function (event) {
+                    const value = field.value;
+                    if (!regexPattern.test(value)) {
+                        field.classList.add('flash');
+                        output.classList.remove('fade-out');
+                        output.textContent = 'Illegal character detected!';
+                        setTimeout(() => {
+                            field.classList.remove('flash');
+                            output.classList.add('fade-out');
+                        }, 300);
+                    } else {
+                        output.textContent = '';
+                        output.classList.remove('fade-out');
+                    }
+                    resetCustomValidity(field);
+                });
+            }
+
+            // Define regex patterns for each field
+            const namePattern = /^[a-zA-Z\s]*$/; // Modify as needed
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email pattern
+            const commentsPattern = /^[a-zA-Z0-9\s]*$/; // Modify as needed
+
+            // Apply the illegal input handler to each field
+            handleIllegalInput(nameInput, nameError, namePattern);
+            handleIllegalInput(emailInput, emailError, emailPattern);
+            handleIllegalInput(commentsInput, commentsError, commentsPattern);
+
             // Reset custom validation on input change
             function resetCustomValidity(field) {
                 if (field.setCustomValidity) {
                     field.setCustomValidity('');
                 }
             }
-    
-            nameInput.addEventListener('input', function() {
+
+            nameInput.addEventListener('input', function () {
                 resetCustomValidity(nameInput);
             });
-            emailInput.addEventListener('input', function() {
+            emailInput.addEventListener('input', function () {
                 resetCustomValidity(emailInput);
             });
-            commentsInput.addEventListener('input', function() {
+            commentsInput.addEventListener('input', function () {
                 resetCustomValidity(commentsInput);
             });
-    
-            nameInput.addEventListener('blur', function() {
+
+            nameInput.addEventListener('blur', function () {
                 validateField(nameInput, 'Please enter your name.', nameError);
             });
-            emailInput.addEventListener('blur', function() {
+            emailInput.addEventListener('blur', function () {
                 validateField(emailInput, 'Please enter a valid email address.', emailError);
             });
-            commentsInput.addEventListener('blur', function() {
+            commentsInput.addEventListener('blur', function () {
                 validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
             });
-    
-            form.addEventListener('submit', function(event) {
+
+            form.addEventListener('submit', function (event) {
                 validateField(nameInput, 'Please enter your name.', nameError);
                 validateField(emailInput, 'Please enter a valid email address.', emailError);
                 validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
-    
+
                 if (!form.checkValidity()) {
                     event.preventDefault(); // Prevent submission
                 }
             });
         });
     </script>
-    
-    
 </body>
+
 </html>
