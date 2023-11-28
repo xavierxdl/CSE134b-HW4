@@ -57,7 +57,7 @@
         }
 
         .flash {
-            animation: flashAnimation 0.3s;
+            animation: flashAnimation 3s;
         }
 
         @keyframes flashAnimation {
@@ -67,7 +67,7 @@
         }
 
         .fade-out {
-            transition: opacity 2s ease-out;
+            transition: opacity 3s ease-out;
             opacity: 0;
         }
     </style>
@@ -111,10 +111,14 @@
             }
 
             // Function to handle illegal characters
-            function handleIllegalInput(field, output, regexPattern) {
+            function handleIllegalInput(field, output, regexPattern, isEmail = false) {
                 field.addEventListener('input', function (event) {
                     const value = field.value;
-                    if (!regexPattern.test(value)) {
+                    if (isEmail && value && !value.includes('@')) {
+                        // For email, only check if '@' is present during typing
+                        output.textContent = '';
+                        output.classList.remove('fade-out');
+                    } else if (!regexPattern.test(value) && value) {
                         field.classList.add('flash');
                         output.classList.remove('fade-out');
                         output.textContent = 'Illegal character detected!';
@@ -137,7 +141,7 @@
 
             // Apply the illegal input handler to each field
             handleIllegalInput(nameInput, nameError, namePattern);
-            handleIllegalInput(emailInput, emailError, emailPattern);
+            handleIllegalInput(emailInput, emailError, /^[^\s@]+$/, true); 
             handleIllegalInput(commentsInput, commentsError, commentsPattern);
 
             // Reset custom validation on input change
