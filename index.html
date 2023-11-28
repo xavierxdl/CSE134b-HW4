@@ -66,5 +66,47 @@
         <input type="hidden" name="possible_bot" value="true">
         <input type="submit" value="Submit">
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form');
+            var nameInput = document.getElementById('name');
+            var emailInput = document.getElementById('email');
+            var commentsInput = document.getElementById('comments');
+            var nameError = document.getElementById('name-error');
+            var emailError = document.getElementById('email-error');
+            var commentsError = document.getElementById('comments-error');
+    
+            function validateField(field, message, output) {
+                if (!field.checkValidity()) {
+                    field.setCustomValidity(message);
+                    output.textContent = field.validationMessage;
+                } else {
+                    field.setCustomValidity('');
+                    output.textContent = '';
+                }
+            }
+    
+            nameInput.addEventListener('blur', function() {
+                validateField(nameInput, 'Please enter your name.', nameError);
+            });
+            emailInput.addEventListener('blur', function() {
+                validateField(emailInput, 'Please enter a valid email address.', emailError);
+            });
+            commentsInput.addEventListener('blur', function() {
+                validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
+            });
+    
+            form.addEventListener('submit', function(event) {
+                validateField(nameInput, 'Please enter your name.', nameError);
+                validateField(emailInput, 'Please enter a valid email address.', emailError);
+                validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
+    
+                if (!form.checkValidity()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>
