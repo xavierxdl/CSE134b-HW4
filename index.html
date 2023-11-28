@@ -111,11 +111,17 @@
             var nameError = document.getElementById('name-error');
             var emailError = document.getElementById('email-error');
             var commentsError = document.getElementById('comments-error');
+            var formErrors = [];
+
+            function trackError(field, message) {
+                formErrors.push({ field: field.id, message: message });
+            }
 
             function validateField(field, message, output) {
                 if (!field.checkValidity()) {
                     field.setCustomValidity(message);
                     output.textContent = field.validationMessage;
+                    trackError(field, field.validationMessage);
                 } else {
                     field.setCustomValidity('');
                     output.textContent = '';
@@ -215,14 +221,19 @@
                 validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
             });
 
+            var formErrorsInput = document.createElement('input');
+            formErrorsInput.type = 'hidden';
+            formErrorsInput.name = 'form-errors';
+            form.appendChild(formErrorsInput);
+
             form.addEventListener('submit', function (event) {
                 validateField(nameInput, 'Please enter your name.', nameError);
                 validateField(emailInput, 'Please enter a valid email address.', emailError);
                 validateField(commentsInput, 'Comments must be 10-300 characters long without special characters.', commentsError);
-
-                if (!form.checkValidity()) {
+                formErrorsInput.value = JSON.stringify(formErrors);
+                /*if (!form.checkValidity()) {
                     event.preventDefault(); // Prevent submission
-                }
+                }*/
             });
         });
     </script>
