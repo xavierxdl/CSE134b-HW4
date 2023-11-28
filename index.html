@@ -14,17 +14,20 @@
             font-family: Arial, sans-serif;
         }
         form {
-            display: grid;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
             width: 300px;
         }
         label {
-            display: block;
+            margin-bottom: 5px;
         }
         input, textarea {
             width: 100%;
             padding: 8px;
-            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
         input[type="submit"] {
             cursor: pointer;
@@ -32,12 +35,17 @@
             color: white;
             border: none;
             padding: 10px 20px;
+            border-radius: 4px;
+            margin-top: 5px;
         }
         input[type="submit"]:hover {
             background-color: #45a049;
         }
         .output {
             min-height: 20px;
+            font-size: 0.9em;
+            color: red;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -45,19 +53,18 @@
     <form action="https://httpbin.org/post" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
+        <output class="output" id="name-error"></output>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
+        <output class="output" id="email-error"></output>
 
         <label for="comments">Comments:</label>
         <textarea id="comments" name="comments" required></textarea>
+        <output class="output" id="comments-error"></output>
 
         <input type="hidden" name="possible_bot" value="true">
-
         <input type="submit" value="Submit">
-
-        <div class="output" id="error-output"></div>
-        <div class="output" id="info-output"></div>
     </form>
 </body>
 </html>
