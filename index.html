@@ -70,6 +70,14 @@
             transition: opacity 3s ease-out;
             opacity: 0;
         }
+
+        .warning {
+            color: orange;
+        }
+
+        .error {
+            color: red;
+        }
     </style>
 </head>
 
@@ -148,6 +156,33 @@
             handleIllegalInput(nameInput, nameError, namePattern);
             handleIllegalInput(emailInput, emailError, emailPattern, true);
             handleIllegalInput(commentsInput, commentsError, commentsPattern);
+
+            var commentsCountdown = document.createElement('div');
+            commentsCountdown.className = 'output';
+            commentsInput.parentNode.insertBefore(commentsCountdown, commentsInput.nextSibling);
+
+            const MAX_CHARACTERS = 300;
+            const WARNING_THRESHOLD = 50;
+
+            function updateCommentsCountdown() {
+                const remaining = MAX_CHARACTERS - commentsInput.value.length;
+                commentsCountdown.textContent = remaining + ' characters remaining';
+
+                if (remaining <= WARNING_THRESHOLD && remaining > 0) {
+                    commentsCountdown.classList.add('warning');
+                    commentsCountdown.classList.remove('error');
+                } else if (remaining <= 0) {
+                    commentsCountdown.classList.add('error');
+                    commentsCountdown.classList.remove('warning');
+                } else {
+                    commentsCountdown.classList.remove('warning', 'error');
+                }
+            }
+
+            commentsInput.addEventListener('input', updateCommentsCountdown);
+
+            // Call it once initially in case there's prefilled content
+            updateCommentsCountdown();
 
             // Reset custom validation on input change
             function resetCustomValidity(field) {
