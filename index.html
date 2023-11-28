@@ -114,11 +114,17 @@
             function handleIllegalInput(field, output, regexPattern, isEmail = false) {
                 field.addEventListener('input', function (event) {
                     const value = field.value;
-                    if (isEmail && value && !value.includes('@')) {
-                        // For email, only check if '@' is present during typing
-                        output.textContent = '';
-                        output.classList.remove('fade-out');
-                    } else if (!regexPattern.test(value) && value) {
+                    let isIllegal = false;
+
+                    if (isEmail) {
+                        // For email, check only for characters not typically found in email addresses
+                        isIllegal = /[^a-zA-Z0-9@.\-_]/.test(value);
+                    } else {
+                        // For other fields, use the provided regex pattern
+                        isIllegal = !regexPattern.test(value);
+                    }
+
+                    if (isIllegal) {
                         field.classList.add('flash');
                         output.classList.remove('fade-out');
                         output.textContent = 'Illegal character detected!';
@@ -134,14 +140,13 @@
                 });
             }
 
-            // Define regex patterns for each field
-            const namePattern = /^[a-zA-Z\s]*$/; // Modify as needed
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email pattern
-            const commentsPattern = /^[a-zA-Z0-9\s]*$/; // Modify as needed
+            // regex patterns
+            const namePattern = /^[a-zA-Z\s]*$/;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const commentsPattern = /^[a-zA-Z0-9\s]*$/;
 
-            // Apply the illegal input handler to each field
             handleIllegalInput(nameInput, nameError, namePattern);
-            handleIllegalInput(emailInput, emailError, /^[^\s@]+$/, true); 
+            handleIllegalInput(emailInput, emailError, emailPattern, true);
             handleIllegalInput(commentsInput, commentsError, commentsPattern);
 
             // Reset custom validation on input change
