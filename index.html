@@ -96,7 +96,7 @@
         }
 
         .countdown {
-            color: black;
+            color: var(--text-color);
         }
 
         .flash {
@@ -181,13 +181,13 @@
             function updateToggleButton(theme) {
                 toggleButton.textContent = theme === 'dark' ? '🌙' : '☀';
             }
-    
+
             toggleButton.addEventListener('click', function () {
                 const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
                 setTheme(newTheme);
                 updateToggleButton(newTheme);
             });
-    
+
             setTheme(currentTheme);
             updateToggleButton(currentTheme);
 
