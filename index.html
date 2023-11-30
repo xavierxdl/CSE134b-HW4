@@ -7,6 +7,7 @@
     <title>Contact Form</title>
     <style>
         :root {
+            --font-family: Arial, sans-serif;
             --background-color: #fff;
             /* Light theme background */
             --text-color: #000;
@@ -23,6 +24,7 @@
         }
 
         body {
+            font-family: var(--font-family);
             background-color: var(--background-color);
             color: var(--text-color);
         }
@@ -31,6 +33,22 @@
             position: absolute;
             top: 20px;
             right: 20px;
+        }
+
+        #theme-customization {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #theme-customization label,
+        #theme-customization input,
+        #theme-customization select {
+            margin: 0;
+            font-size: 0.8em;
         }
 
         #toggle-theme {
@@ -125,6 +143,23 @@
 </head>
 
 <body>
+    <div id="theme-customization">
+        <label for="background-color-picker">Bg:</label>
+        <input type="color" id="background-color-picker">
+
+        <label for="text-color-picker">Text:</label>
+        <input type="color" id="text-color-picker">
+
+        <label for="font-selector">Font:</label>
+        <select id="font-selector">
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Times New Roman, serif">Times New Roman</option>
+            <option value="Courier New, monospace">Courier New</option>
+        </select>
+
+        <button id="apply-theme">Apply</button>
+    </div>
+
     <div id="theme-switcher">
         <button id="toggle-theme">☀</button>
     </div>
@@ -170,6 +205,40 @@
                 }
             }
 
+            //THEME PICKER
+            const bgColorPicker = document.getElementById('background-color-picker');
+            const textColorPicker = document.getElementById('text-color-picker');
+            const fontSelector = document.getElementById('font-selector');
+            const applyThemeButton = document.getElementById('apply-theme');
+
+            function applyCustomTheme() {
+                document.documentElement.style.setProperty('--background-color', bgColorPicker.value);
+                document.documentElement.style.setProperty('--text-color', textColorPicker.value);
+                document.documentElement.style.setProperty('--font-family', `'${fontSelector.value}'`);
+
+                // Save custom theme settings
+                localStorage.setItem('custom-theme', JSON.stringify({
+                    bgColor: bgColorPicker.value,
+                    textColor: textColorPicker.value,
+                    fontFamily: fontSelector.value
+                }));
+            }
+
+            applyThemeButton.addEventListener('click', applyCustomTheme);
+
+            // Load custom theme if available
+            const savedTheme = JSON.parse(localStorage.getItem('custom-theme'));
+            if (savedTheme) {
+                document.documentElement.style.setProperty('--background-color', savedTheme.bgColor);
+                document.documentElement.style.setProperty('--text-color', savedTheme.textColor);
+                document.documentElement.style.setProperty('--font-family', savedTheme.fontFamily);
+
+                bgColorPicker.value = savedTheme.bgColor;
+                textColorPicker.value = savedTheme.textColor;
+                fontSelector.value = savedTheme.fontFamily;
+            }
+
+            //LIGHT DARK MODE
             const toggleButton = document.getElementById('toggle-theme');
             const currentTheme = localStorage.getItem('theme') || 'light';
 
